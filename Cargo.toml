@@ -1,0 +1,42 @@
+[package]
+name = "mdbook-pele"
+version = "0.1.0"
+description = "An mdbook preprocessor that renders Mermaid diagrams with Pele (https://pele.run)"
+license = "MIT"
+homepage = "https://pele.run"
+repository = "https://github.com/ld3z/mdbook-pele"
+edition = "2024"
+keywords = ["mdbook", "mermaid", "pele", "diagram", "preprocessor"]
+categories = ["command-line-utilities", "text-processing"]
+readme = "README.md"
+include = [
+    "src/**/*",
+    "Cargo.toml",
+    "README.md",
+    "LICENSE",
+]
+
+[package.metadata.binstall]
+pkg-url = "{ repo }/releases/download/v{ version }/{ name }-v{ version }-{ target }.tar.gz"
+bin-dir = "{ bin }{ binary-ext }"
+pkg-fmt = "tgz"
+
+[package.metadata.binstall.overrides.x86_64-pc-windows-msvc]
+pkg-url = "{ repo }/releases/download/v{ version }/{ name }-v{ version }-{ target }.zip"
+pkg-fmt = "zip"
+
+[[bin]]
+name = "mdbook-pele"
+path = "src/main.rs"
+
+[dependencies]
+mdbook-preprocessor = "0.5.4"
+pulldown-cmark = { version = "0.13.4", default-features = false }
+clap = { version = "4.6.7", features = ["cargo", "derive"] }
+serde_json = "1.0.154"
+semver = "1.0.28"
+anyhow = "1.0.104"
+toml_edit = "0.25.17"
+
+[dev-dependencies]
+pretty_assertions = "1.4.1"

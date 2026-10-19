@@ -1,0 +1,13 @@
+[book]
+title = "mdbook-pele"
+authors = ["ld3zian"]
+language = "en"
+
+[preprocessor.pele]
+command = "mdbook-pele"
+
+[output.html]
+additional-js = ["pele.global.js", "pele-init.js"]
+git-repository-url = "https://github.com/ld3z/mdbook-pele"
+edit-url-template = "https://github.com/ld3z/mdbook-pele/edit/main/book/{path}"
+no-section-label = true

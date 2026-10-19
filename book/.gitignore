@@ -1,0 +1,4 @@
+book
+# Written by `mdbook-pele install`, so they always match the installed version.
+pele.global.js
+pele-init.js

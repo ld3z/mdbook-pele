@@ -1,0 +1,7 @@
+[workspace]
+# Matches the `binstall` asset URLs in Cargo.toml.
+git_tag_name = "v{{ version }}"
+git_release_enable = true
+changelog_update = true
+# Only publish when a release PR is merged, not on every push to main.
+release_always = false
