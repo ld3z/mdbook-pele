@@ -16,10 +16,19 @@ Compared to the classic `mdbook-mermaid` (client-side mermaid.js):
 
 ## Install
 
+Install a prebuilt binary with [cargo-binstall](https://github.com/cargo-bins/cargo-binstall):
+
 ```bash
-cargo install --path .          # from this repo
-# or later: cargo install mdbook-pele
+cargo binstall mdbook-pele
 ```
+
+Or build it from [crates.io](https://crates.io/crates/mdbook-pele):
+
+```bash
+cargo install mdbook-pele
+```
+
+Prebuilt binaries for Linux, macOS and Windows can also be downloaded from [GitHub Releases](https://github.com/ld3z/mdbook-pele/releases).
 
 Then, in your book directory:
 
@@ -29,7 +38,7 @@ mdbook-pele install
 
 This will:
 
-1. Write `pele.global.js` and `pele-init.js` next to `book.toml`
+1. Write `pele.global.js`, `pele-init.js`, and `pele.css` next to `book.toml`
 2. Add to `book.toml`:
 
 ```toml
@@ -38,6 +47,7 @@ command = "mdbook-pele"
 
 [output.html]
 additional-js = ["pele.global.js", "pele-init.js"]
+additional-css = ["pele.css"]
 ```
 
 ## Usage
@@ -71,33 +81,12 @@ and the included `pele-init.js` calls `pele.mount()` on each of them.
 
 ## Theming
 
-Pele uses CSS variables. Override them in your book’s theme (e.g. `theme/css/chrome.css` or `additional-css`) to match light/dark modes:
+`pele.css` maps Pele’s variables onto mdBook’s (`--fg`, `--links`, and so on), so diagrams follow Light, Rust, Coal, Navy, and Ayu without extra setup.
+
+Override the same variables in your book’s theme (for example `theme/css/chrome.css` or another `additional-css` file) if you want a custom look:
 
 ```css
-/* Light (mdBook default) */
-.pele,
 pre.mermaid {
-  --pele-bg: transparent;
-  --pele-fg: var(--fg, #1a1a1a);
-  --pele-muted: var(--fg, #6f6e69);
-  --pele-line: var(--fg, #1a1a1a);
-  --pele-surface: var(--bg, #f2f0e5);
-  --pele-surface-alt: #e6e4d9;
-  --pele-border: #cecdc3;
-  --pele-accent: #205ea6;
-  --pele-font: var(--font, sans-serif);
-}
-
-/* Dark themes (navy, coal, ayu, etc.) */
-.ayu .pele, .coal .pele, .navy .pele,
-.ayu pre.mermaid, .coal pre.mermaid, .navy pre.mermaid {
-  --pele-bg: transparent;
-  --pele-fg: var(--fg);
-  --pele-muted: #a0a0a0;
-  --pele-line: var(--fg);
-  --pele-surface: #2a2a2a;
-  --pele-surface-alt: #333;
-  --pele-border: #555;
   --pele-accent: #7aa2f7;
 }
 ```
@@ -107,20 +96,15 @@ See [pele.run/theming](https://pele.run/theming) for the full variable list.
 ## How it works
 
 1. **Preprocessor (Rust)** – walks every chapter, finds fenced `mermaid` code blocks with `pulldown-cmark`, HTML-escapes the source, and replaces the block with `<pre class="mermaid">…</pre>`.
-2. **Assets** – `pele.global.js` (Pele 1.6.0 UMD build) + `pele-init.js` (mounts every `pre.mermaid` on `DOMContentLoaded`).
+2. **Assets** – `pele.global.js` (Pele 1.6.0 UMD build), `pele-init.js` (mounts every `pre.mermaid` on `DOMContentLoaded`), and `pele.css` (maps Pele colors onto the active mdBook theme).
 3. **Runtime** – Pele renders each diagram to SVG synchronously, adapts layout to container width, and supports zoom/pan when the diagram is larger than its box.
-
-## Migrating from mdbook-mermaid
-
-1. Remove the old preprocessor and JS assets.
-2. Run `mdbook-pele install`.
-3. Keep your `` ```mermaid `` blocks — no syntax changes.
 
 ## Development
 
 ```bash
 cargo test
 cargo build --release
+cargo install --path .   # install the local build
 ```
 
 To refresh the bundled Pele build:

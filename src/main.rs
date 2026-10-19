@@ -12,6 +12,7 @@ use std::process;
 
 const PELE_JS: &str = include_str!("bin/assets/pele.global.js");
 const PELE_INIT_JS: &str = include_str!("bin/assets/pele-init.js");
+const PELE_CSS: &str = include_str!("bin/assets/pele.css");
 
 #[derive(Parser)]
 #[command(
@@ -95,7 +96,11 @@ fn install(book_dir: &Path) -> Result<()> {
     }
 
     // Copy assets next to book.toml (same place mdbook-mermaid uses)
-    let assets = [("pele.global.js", PELE_JS), ("pele-init.js", PELE_INIT_JS)];
+    let assets = [
+        ("pele.global.js", PELE_JS),
+        ("pele-init.js", PELE_INIT_JS),
+        ("pele.css", PELE_CSS),
+    ];
     for (name, content) in assets {
         let dest = book_dir.join(name);
         fs::write(&dest, content).with_context(|| format!("failed to write {}", dest.display()))?;
@@ -137,40 +142,44 @@ fn install(book_dir: &Path) -> Result<()> {
         .or_insert(toml_edit::Item::Table(toml_edit::Table::new()));
     let html_table = html.as_table_mut().unwrap();
 
-    let needed = ["pele.global.js", "pele-init.js"];
-    match html_table.get_mut("additional-js") {
-        Some(item) => {
-            if let Some(arr) = item.as_array_mut() {
-                for js in needed {
-                    let already = arr.iter().any(|v| v.as_str() == Some(js));
-                    if !already {
-                        arr.push(js);
-                        eprintln!("Added {js} to additional-js");
-                    }
-                }
-            } else {
-                // Replace non-array value
-                let mut arr = toml_edit::Array::new();
-                for js in needed {
-                    arr.push(js);
-                }
-                *item = toml_edit::value(arr);
-                eprintln!("Set additional-js = [\"pele.global.js\", \"pele-init.js\"]");
-            }
-        }
-        None => {
-            let mut arr = toml_edit::Array::new();
-            for js in needed {
-                arr.push(js);
-            }
-            html_table["additional-js"] = toml_edit::value(arr);
-            eprintln!("Added additional-js = [\"pele.global.js\", \"pele-init.js\"]");
-        }
-    }
+    add_to_array(
+        html_table,
+        "additional-js",
+        &["pele.global.js", "pele-init.js"],
+        false,
+    );
+    // Listed first so the book's own stylesheets can override the theme variables.
+    add_to_array(html_table, "additional-css", &["pele.css"], true);
 
     fs::write(&book_toml, doc.to_string())
         .with_context(|| format!("failed to write {}", book_toml.display()))?;
     eprintln!("Updated {}", book_toml.display());
     eprintln!("Done. Run `mdbook build` (or `mdbook serve`) to see Pele diagrams.");
     Ok(())
+}
+
+/// Ensure every entry in `needed` is in the `key` array, inserting missing ones at the
+/// front when `prepend` is set and at the end otherwise.
+fn add_to_array(table: &mut toml_edit::Table, key: &str, needed: &[&str], prepend: bool) {
+    let item = table
+        .entry(key)
+        .or_insert(toml_edit::value(toml_edit::Array::new()));
+    if item.as_array().is_none() {
+        *item = toml_edit::value(toml_edit::Array::new());
+    }
+    let arr = item.as_array_mut().unwrap();
+
+    let missing: Vec<&str> = needed
+        .iter()
+        .copied()
+        .filter(|name| !arr.iter().any(|v| v.as_str() == Some(name)))
+        .collect();
+    for (i, name) in missing.into_iter().enumerate() {
+        if prepend {
+            arr.insert(i, name);
+        } else {
+            arr.push(name);
+        }
+        eprintln!("Added {name} to {key}");
+    }
 }

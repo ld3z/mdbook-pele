@@ -1,0 +1,26 @@
+/* mdBook styles `pre` as a code block. Reset that so Pele measures labels with
+   the book font, and map Pele's variables onto the active mdBook theme.
+   --pele-bg must be the page color (not white or transparent): flowchart edge
+   labels draw a knockout rect with it, which is how Yes/No sit on the arrows. */
+pre.mermaid {
+  background: none;
+  border: none;
+  padding: 0;
+  overflow: visible;
+  white-space: normal;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: normal;
+}
+
+pre.mermaid,
+.pele {
+  --pele-bg: var(--bg);
+  --pele-fg: var(--fg);
+  --pele-line: var(--fg);
+  --pele-muted: var(--fg);
+  --pele-surface: var(--quote-bg);
+  --pele-surface-alt: var(--quote-border);
+  --pele-border: var(--theme-popup-border);
+  --pele-accent: var(--links);
+}
