@@ -96,7 +96,7 @@ See [pele.run/theming](https://pele.run/theming) for the full variable list.
 ## How it works
 
 1. **Preprocessor (Rust)** – walks every chapter, finds fenced `mermaid` code blocks with `pulldown-cmark`, HTML-escapes the source, and replaces the block with `<pre class="mermaid">…</pre>`.
-2. **Assets** – `pele.global.js` (Pele 1.6.0 UMD build), `pele-init.js` (mounts every `pre.mermaid` on `DOMContentLoaded`), and `pele.css` (maps Pele colors onto the active mdBook theme).
+2. **Assets** – `pele.global.js` (Pele 1.10.0 UMD build), `pele-init.js` (mounts every `pre.mermaid` on `DOMContentLoaded`), and `pele.css` (maps Pele colors onto the active mdBook theme).
 3. **Runtime** – Pele renders each diagram to SVG synchronously, adapts layout to container width, and supports zoom/pan when the diagram is larger than its box.
 
 ## Development
