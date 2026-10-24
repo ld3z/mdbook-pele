@@ -1,6 +1,6 @@
 [package]
 name = "mdbook-pele"
-version = "0.1.0"
+version = "0.1.1"
 description = "An mdbook preprocessor that renders Mermaid diagrams with Pele (https://pele.run)"
 license = "MIT"
 homepage = "https://pele.run"
