@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2](https://github.com/ld3z/mdbook-pele/compare/v0.1.1...v0.1.2) - 2026-10-27
+
+### Fixed
+
+- bump pele to 1.12
+
 ## [0.1.1](https://github.com/ld3z/mdbook-pele/compare/v0.1.0...v0.1.1) - 2026-10-24
 
 ### Fixed
